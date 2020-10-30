@@ -9,6 +9,13 @@ public class PlayerController : PhysicsObject
     [SerializeField]
     private float jumpTakeOffSpeed = 7;
 
+    Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
     protected override void ComputeVelocity()
     {
         Vector2 move = Vector2.zero;
@@ -22,14 +29,17 @@ public class PlayerController : PhysicsObject
                 velocity.y = velocity.y * 0.5f;
         }
 
-        //bool flipSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < 0.01f));
-        //if (flipSprite)
-        //{
-        //    spriteRenderer.flipX = !spriteRenderer.flipX;
-        //}
+        bool flipSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < 0f));
+        if (flipSprite)
+        {
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+        }
 
         //animator.SetBool("grounded", grounded);
-        //animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+        if (grounded)
+            animator.SetFloat("velocityX", Mathf.Abs(velocity.x));// maxSpeed);
+        else
+            animator.SetFloat("velocityX", 0);
 
         targetVelocity = move * maxSpeed;
     }
