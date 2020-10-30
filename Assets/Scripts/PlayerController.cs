@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
 using UnityEngine;
+
+public enum PlayerPower { Shoot, Jump };
 
 public class PlayerController : PhysicsObject
 {
@@ -9,24 +13,51 @@ public class PlayerController : PhysicsObject
     [SerializeField]
     private float jumpTakeOffSpeed = 7;
 
-    Animator animator;
+    [SerializeField]
+    private WorldsController worldsController;
 
-    private void Awake()
+    [SerializeField]
+    private GameObject bullet;
+
+    Animator animator;
+    private float shootTime = 0;
+    private Player player;
+
+    protected void Awake()
     {
         animator = GetComponent<Animator>();
+        player = GetComponent<Player>();
     }
 
     protected override void ComputeVelocity()
     {
+        if (worldsController.IsGameOver)
+        {
+            animator.SetFloat("velocityX", 0);
+            return;
+        }
+
+        shootTime += Time.deltaTime;
         Vector2 move = Vector2.zero;
         move.x = Input.GetAxis("Horizontal");
 
-        if (Input.GetButtonDown("Jump") && grounded)
+        if (Input.GetButtonDown("Jump") && grounded && worldsController.CurrentPlayerPower == PlayerPower.Jump)
             velocity.y = jumpTakeOffSpeed;
-        else if (Input.GetButtonUp("Jump"))
+        else if (Input.GetButtonUp("Jump") && worldsController.CurrentPlayerPower == PlayerPower.Jump
+                    && player.PlayerType == worldsController.CurrentPlayerType)
         {
             if (velocity.y > 0)
                 velocity.y = velocity.y * 0.5f;
+        }
+
+
+        if (Input.GetButtonDown("Jump") && worldsController.CurrentPlayerPower == PlayerPower.Shoot && shootTime > .6f
+                && player.PlayerType == worldsController.CurrentPlayerType)
+        {
+            var sign = (spriteRenderer.flipX) ? -1 : 1;
+            GameObject bul = Instantiate(bullet, new Vector2(player.transform.position.x + sign * 0.2f, player.transform.position.y + 0.8f), Quaternion.identity);
+            bul.GetComponent<BulletController>().Sign = sign;
+            shootTime = 0;
         }
 
         bool flipSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < 0f));
@@ -35,9 +66,8 @@ public class PlayerController : PhysicsObject
             spriteRenderer.flipX = !spriteRenderer.flipX;
         }
 
-        //animator.SetBool("grounded", grounded);
         if (grounded)
-            animator.SetFloat("velocityX", Mathf.Abs(velocity.x));// maxSpeed);
+            animator.SetFloat("velocityX", Mathf.Abs(velocity.x));
         else
             animator.SetFloat("velocityX", 0);
 

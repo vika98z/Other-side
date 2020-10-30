@@ -4,31 +4,22 @@ using UnityEngine;
 
 public enum PlayerType { DarkPlayer, LightPlayer };
 
-public class Player : MonoBehaviour
+public class Player: MonoBehaviour
 {
     [SerializeField]
     private GameObject darkSkin;
     [SerializeField]
     private GameObject lightSkin;
+    [SerializeField]
+    private WorldsController worldsController;
 
     public PlayerType PlayerType;
 
-    public void SetPlayerType(PlayerType type)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        switch (type)
+        if (collision.tag == "Trap")
         {
-            case PlayerType.DarkPlayer:
-                darkSkin.SetActive(true);
-                lightSkin.SetActive(false);
-                break;
-            case PlayerType.LightPlayer:
-                lightSkin.SetActive(true);
-                darkSkin.SetActive(false);
-                break;
-            default:
-                break;
+            worldsController.GameOver(PlayerType);
         }
-
-        PlayerType = type;
     }
 }
