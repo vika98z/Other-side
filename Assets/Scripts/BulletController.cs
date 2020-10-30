@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class BulletController : MonoBehaviour
 {
-    private Rigidbody rb;
+    private Rigidbody2D rb;
     public int Sign;
+    [SerializeField]
+    private GameObject Sprite;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
         Invoke("DestroySelf", 2f);
+    }
+
+    private void Start()
+    {
+        Sprite.transform.rotation = Quaternion.Euler(0, 0, Sign * 90);
     }
 
     private void FixedUpdate()
@@ -23,9 +30,11 @@ public class BulletController : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (collision.gameObject.CompareTag("Ground"))
-        //    Destroy(gameObject);
+        if (collision.gameObject.tag == "Ground")
+        {
+            Destroy(gameObject);
+        }
     }
 }

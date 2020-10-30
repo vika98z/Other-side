@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public enum WorldType { Dark, Light };
 
@@ -22,12 +23,18 @@ public class WorldsController : MonoBehaviour
     private LayerMask DarkMask;
     [SerializeField]
     private LayerMask LightMask;
+    [SerializeField]
+    private GameObject gameOverPanel;
+    [SerializeField]
+    private Text gameOverText;
 
     private LayerMask oldMask;
+    private PlayerType gameOverType;
+
     void Awake()
     {
         Time.timeScale = 1;
-
+        gameOverPanel.SetActive(false);
         oldMask = camera.cullingMask;
         IsGameOver = false;
         CurrentWorldType = WorldType.Light;
@@ -66,7 +73,7 @@ public class WorldsController : MonoBehaviour
     public void GameOver(PlayerType player)
     {
         IsGameOver = true;
-
+        gameOverType = player;
         if (player != CurrentPlayerType)
         {
             ChangeWorlds();
@@ -78,6 +85,18 @@ public class WorldsController : MonoBehaviour
     public void SetResults()
     {
         Time.timeScale = 0;
+        gameOverPanel.SetActive(true);
 
+        switch (gameOverType)
+        {
+            case PlayerType.DarkPlayer:
+                gameOverText.text = "Погиб игрок из тёмного мира";
+                break;
+            case PlayerType.LightPlayer:
+                gameOverText.text = "Погиб игрок из светлого мира";
+                break;
+            default:
+                break;
+        }
     }
 }
