@@ -22,4 +22,10 @@ public class Player: MonoBehaviour
             worldsController.GameOver(PlayerType);
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+            worldsController.GameOver(PlayerType);
+    }
 }

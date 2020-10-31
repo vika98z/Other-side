@@ -30,9 +30,12 @@ public class WorldsController : MonoBehaviour
 
     private LayerMask oldMask;
     private PlayerType gameOverType;
+    private CameraController cameraController;
 
     void Awake()
     {
+        cameraController = camera.GetComponent<CameraController>();
+        cameraController.Player = lightPlayer.transform;
         Time.timeScale = 1;
         gameOverPanel.SetActive(false);
         oldMask = camera.cullingMask;
@@ -54,12 +57,14 @@ public class WorldsController : MonoBehaviour
         switch (CurrentWorldType)
         {
             case WorldType.Dark:
+                cameraController.Player = lightPlayer.transform;
                 camera.cullingMask = LightMask;
                 CurrentWorldType = WorldType.Light;
                 CurrentPlayerPower = PlayerPower.Shoot;
                 CurrentPlayerType = PlayerType.LightPlayer;
                 break;
             case WorldType.Light:
+                cameraController.Player = darkPlayer.transform;
                 camera.cullingMask = DarkMask;
                 CurrentWorldType = WorldType.Dark;
                 CurrentPlayerPower = PlayerPower.Jump;

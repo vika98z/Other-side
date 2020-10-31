@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField]
-    private Transform player;
+    public Transform Player;
     [SerializeField]
     private WorldsController worldsController;
 
@@ -21,22 +20,25 @@ public class CameraController : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (!zoom)
+        if (Player)
         {
-            Vector3 point = camera.WorldToViewportPoint(player.position);
-            Vector3 delta = player.position - camera.ViewportToWorldPoint(new Vector3(0.5f, Y, point.z)); //(new Vector3(0.5, 0.5, point.z));
-            Vector3 destination = transform.position + delta;
-            transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
-        }
-        else
-        {
-            if (camera.orthographicSize > 3)
+            if (!zoom)
             {
-                camera.orthographicSize -= Time.deltaTime;
+                Vector3 point = camera.WorldToViewportPoint(Player.position);
+                Vector3 delta = Player.position - camera.ViewportToWorldPoint(new Vector3(0.5f, Y, point.z));
+                Vector3 destination = transform.position + delta;
+                transform.position = Vector3.SmoothDamp(transform.position, destination, ref velocity, dampTime);
             }
             else
             {
-                worldsController.SetResults();
+                if (camera.orthographicSize > 3)
+                {
+                    camera.orthographicSize -= Time.deltaTime;
+                }
+                else
+                {
+                    worldsController.SetResults();
+                }
             }
         }
     }

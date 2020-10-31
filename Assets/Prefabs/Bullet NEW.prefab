@@ -116,7 +116,7 @@ GameObject:
   - component: {fileID: 2912943665952614094}
   m_Layer: 12
   m_Name: Bullet NEW
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -187,3 +187,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sign: 0
   Sprite: {fileID: 3162284233742090612}
+  lifeTime: 0.5

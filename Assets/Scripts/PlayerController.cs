@@ -19,9 +19,16 @@ public class PlayerController : PhysicsObject
     [SerializeField]
     private GameObject bullet;
 
+    [SerializeField]
+    private Transform otherPlayer;
+    [SerializeField]
+    private bool isChecking;
+
     Animator animator;
     private float shootTime = 0;
     private Player player;
+    public float offsetX = .2f;
+
 
     protected void Awake()
     {
@@ -39,7 +46,17 @@ public class PlayerController : PhysicsObject
 
         shootTime += Time.deltaTime;
         Vector2 move = Vector2.zero;
-        move.x = Input.GetAxis("Horizontal");
+        
+        if (isChecking)
+        {
+            if (Mathf.Abs(transform.position.x - otherPlayer.position.x) > offsetX)
+                transform.position = otherPlayer.position;
+
+            move.x = Input.GetAxis("Horizontal");
+        }
+        else
+            move.x = Input.GetAxis("Horizontal");
+
 
         if (Input.GetButtonDown("Jump") && grounded && worldsController.CurrentPlayerPower == PlayerPower.Jump)
             velocity.y = jumpTakeOffSpeed;

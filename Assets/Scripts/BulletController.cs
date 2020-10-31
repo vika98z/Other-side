@@ -8,11 +8,13 @@ public class BulletController : MonoBehaviour
     public int Sign;
     [SerializeField]
     private GameObject Sprite;
+    [SerializeField]
+    private float lifeTime;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        Invoke("DestroySelf", 2f);
+        Invoke("DestroySelf", lifeTime);
     }
 
     private void Start()
