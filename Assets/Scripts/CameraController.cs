@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     private Camera camera;
     private float Y = 0.3f;
     private bool zoom = false;
-
+    private float zoomStop = 2;
     private void Awake()
     {
         camera = GetComponent<Camera>();
@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
             }
             else
             {
-                if (camera.orthographicSize > 3)
+                if (camera.orthographicSize > zoomStop)
                 {
                     camera.orthographicSize -= Time.deltaTime;
                 }

@@ -27,11 +27,12 @@ public class PlayerController : PhysicsObject
     Animator animator;
     private float shootTime = 0;
     private Player player;
-    public float offsetX = .2f;
-
+    private  float offsetX = .2f;
+    private AudioSource audioSource;
 
     protected void Awake()
     {
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
         player = GetComponent<Player>();
     }
@@ -59,7 +60,11 @@ public class PlayerController : PhysicsObject
 
 
         if (Input.GetButtonDown("Jump") && grounded && worldsController.CurrentPlayerPower == PlayerPower.Jump)
+        {
             velocity.y = jumpTakeOffSpeed;
+            audioSource.clip = worldsController.MusicController.Jump;
+            audioSource.Play();
+        }
         else if (Input.GetButtonUp("Jump") && worldsController.CurrentPlayerPower == PlayerPower.Jump
                     && player.PlayerType == worldsController.CurrentPlayerType)
         {
@@ -72,6 +77,8 @@ public class PlayerController : PhysicsObject
                 && player.PlayerType == worldsController.CurrentPlayerType)
         {
             var sign = (spriteRenderer.flipX) ? -1 : 1;
+            audioSource.clip = worldsController.MusicController.Shoot;
+            audioSource.Play();
             GameObject bul = Instantiate(bullet, new Vector2(player.transform.position.x + sign * 0.2f, player.transform.position.y + 0.8f), Quaternion.identity);
             bul.GetComponent<BulletController>().Sign = sign;
             shootTime = 0;

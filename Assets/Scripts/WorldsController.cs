@@ -33,6 +33,8 @@ public class WorldsController : MonoBehaviour
     [SerializeField]
     private Image HomeButton;
 
+    public MusicController MusicController;
+
     private int Score;
     private int maxScore;
     private int curScore;
@@ -40,8 +42,11 @@ public class WorldsController : MonoBehaviour
     private PlayerType gameOverType;
     private CameraController cameraController;
     private int startX;
+    private float time = 0;
+    private bool canChangeWorld;
     void Awake()
     {
+        canChangeWorld = false;
         Score = 0;
         startX = (int)lightPlayer.transform.position.x;
         maxScore = PlayerPrefs.GetInt("BestScore");
@@ -61,11 +66,22 @@ public class WorldsController : MonoBehaviour
 
     void Update()
     {
+        time += Time.deltaTime;
+        if (time >= 1)
+        {
+            canChangeWorld = true;
+            time = 0;
+        }
+
         if (Input.GetKeyDown(KeyCode.E) && !IsGameOver)
-            ChangeWorlds();
+            if (canChangeWorld)
+                ChangeWorlds();
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Menu();
+
+
+
 
         curScore = (int)lightPlayer.transform.position.x - startX;
         Mathf.Clamp(curScore, 0, curScore);
@@ -98,6 +114,7 @@ public class WorldsController : MonoBehaviour
         }
 
         ChangeColorUI();
+        canChangeWorld = false;
     }
 
     private void ChangeColorUI()
@@ -120,12 +137,13 @@ public class WorldsController : MonoBehaviour
     public void GameOver(PlayerType player)
     {
         IsGameOver = true;
+        MusicController.SetGameOverMusic();
         gameOverType = player;
         if (player != CurrentPlayerType)
         {
             ChangeWorlds();
         }
-
+        
         camera.GetComponent<CameraController>().SetZoom();
     }
 

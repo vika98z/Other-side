@@ -11,10 +11,13 @@ public class ButtonsController : MonoBehaviour
     {
         Time.timeScale = 1;
         var score = PlayerPrefs.GetInt("BestScore");
-        if (score > 0)
-            bestScoreText.text = "Рекорд: " + score;
-        else
-            bestScoreText.text = "";
+        if (bestScoreText)
+        {
+            if (score > 0)
+                bestScoreText.text = "Рекорд: " + score;
+            else
+                bestScoreText.text = "";
+        }
     }
 
     public void StartGame()
