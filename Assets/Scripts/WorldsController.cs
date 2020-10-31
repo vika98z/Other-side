@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -27,13 +28,23 @@ public class WorldsController : MonoBehaviour
     private GameObject gameOverPanel;
     [SerializeField]
     private Text gameOverText;
+    [SerializeField]
+    private Text ScoreText;
+    [SerializeField]
+    private Image HomeButton;
 
+    private int Score;
+    private int maxScore;
+    private int curScore;
     private LayerMask oldMask;
     private PlayerType gameOverType;
     private CameraController cameraController;
-
+    private int startX;
     void Awake()
     {
+        Score = 0;
+        startX = (int)lightPlayer.transform.position.x;
+        maxScore = PlayerPrefs.GetInt("BestScore");
         cameraController = camera.GetComponent<CameraController>();
         cameraController.Player = lightPlayer.transform;
         Time.timeScale = 1;
@@ -44,12 +55,24 @@ public class WorldsController : MonoBehaviour
         camera.cullingMask = LightMask;
         CurrentPlayerPower = PlayerPower.Shoot;
         CurrentPlayerType = PlayerType.LightPlayer;
+
+        ChangeColorUI();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.E) && !IsGameOver)
             ChangeWorlds();
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Menu();
+
+        curScore = (int)lightPlayer.transform.position.x - startX;
+        Mathf.Clamp(curScore, 0, curScore);
+        if (curScore > Score)
+            Score = curScore;
+
+        ScoreText.text = Score.ToString();
     }
 
     public void ChangeWorlds()
@@ -73,6 +96,25 @@ public class WorldsController : MonoBehaviour
             default:
                 break;
         }
+
+        ChangeColorUI();
+    }
+
+    private void ChangeColorUI()
+    {
+        switch (CurrentWorldType)
+        {
+            case WorldType.Dark:
+                HomeButton.color = Color.white;
+                ScoreText.color = Color.white;
+                break;
+            case WorldType.Light:
+                HomeButton.color = Color.black;
+                ScoreText.color = Color.black;
+                break;
+            default:
+                break;
+        }
     }
 
     public void GameOver(PlayerType player)
@@ -91,6 +133,8 @@ public class WorldsController : MonoBehaviour
     {
         Time.timeScale = 0;
         gameOverPanel.SetActive(true);
+        if (Score > maxScore)
+            PlayerPrefs.SetInt("BestScore", Score);
 
         switch (gameOverType)
         {
@@ -103,5 +147,12 @@ public class WorldsController : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void Menu()
+    {
+        if (Score > maxScore)
+            PlayerPrefs.SetInt("BestScore", Score);
+        SceneManager.LoadScene("Menu");
     }
 }
