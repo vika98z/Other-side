@@ -48,3 +48,6 @@ TagManager:
   - name: ui
     uniqueID: 1262114087
     locked: 0
+  - name: background
+    uniqueID: 3674916801
+    locked: 0
