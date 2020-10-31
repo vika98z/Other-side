@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum PlayerPower { Shoot, Jump };
 

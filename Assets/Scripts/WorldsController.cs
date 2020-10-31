@@ -1,8 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public enum WorldType { Dark, Light };
@@ -36,6 +33,8 @@ public class WorldsController : MonoBehaviour
     private Image eImage;
     [SerializeField]
     private GameObject Tutorial;
+    [SerializeField]
+    private GameObject winPanel;
 
     public MusicController MusicController;
 
@@ -48,10 +47,11 @@ public class WorldsController : MonoBehaviour
     private int startX;
     private float time = 0;
     private bool canChangeWorld;
+    private bool win = false;
     void Awake()
     {
         var flag = PlayerPrefs.HasKey("BestScore");
-
+        winPanel.SetActive(false);
         Tutorial.SetActive(false);
         canChangeWorld = false;
         Score = 0;
@@ -69,15 +69,11 @@ public class WorldsController : MonoBehaviour
         CurrentPlayerType = PlayerType.LightPlayer;
 
         ChangeColorUI();
-        ///
-        ///
         if (!flag)
-        //if (flag)
         {
             Time.timeScale = 0;
             IsGameOver = true;
             Tutorial.SetActive(true);
-
         }
     }
 
@@ -105,9 +101,6 @@ public class WorldsController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
             Menu();
-
-
-
 
         curScore = (int)lightPlayer.transform.position.x - startX;
         Mathf.Clamp(curScore, 0, curScore);
@@ -183,23 +176,37 @@ public class WorldsController : MonoBehaviour
         camera.GetComponent<CameraController>().SetZoom();
     }
 
-    public void SetResults()
+    public void GameOverWin()
     {
+        IsGameOver = true;
+        win = true;
+        MusicController.SetGameOverMusic();
         Time.timeScale = 0;
-        gameOverPanel.SetActive(true);
+        winPanel.SetActive(true);
         if (Score > maxScore)
             PlayerPrefs.SetInt("BestScore", Score);
+    }
 
-        switch (gameOverType)
+    public void SetResults()
+    {
+        if (!win)
         {
-            case PlayerType.DarkPlayer:
-                gameOverText.text = "Погиб игрок из тёмного мира";
-                break;
-            case PlayerType.LightPlayer:
-                gameOverText.text = "Погиб игрок из светлого мира";
-                break;
-            default:
-                break;
+            Time.timeScale = 0;
+            gameOverPanel.SetActive(true);
+            if (Score > maxScore)
+                PlayerPrefs.SetInt("BestScore", Score);
+
+            switch (gameOverType)
+            {
+                case PlayerType.DarkPlayer:
+                    gameOverText.text = "Погиб игрок из тёмного мира";
+                    break;
+                case PlayerType.LightPlayer:
+                    gameOverText.text = "Погиб игрок из светлого мира";
+                    break;
+                default:
+                    break;
+            }
         }
     }
 

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum PlayerType { DarkPlayer, LightPlayer };
 
@@ -20,6 +18,10 @@ public class Player: MonoBehaviour
         if (collision.tag == "Trap")
         {
             worldsController.GameOver(PlayerType);
+        }
+        else if (collision.tag == "Final")
+        {
+            worldsController.GameOverWin();
         }
     }
 

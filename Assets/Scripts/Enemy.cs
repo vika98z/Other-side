@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy : PhysicsObject
 {
@@ -10,6 +8,8 @@ public class Enemy : PhysicsObject
     private BoxCollider2D triggerCollider;
     private Animator animator;
     private bool run = false;
+    [SerializeField]
+    private WorldsController worldsController;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -17,7 +17,7 @@ public class Enemy : PhysicsObject
 
     void Update()
     {
-        if (run)
+        if (run && !worldsController.IsGameOver)
         {
             Vector2 move = Vector2.zero;
             move.x = -1;
