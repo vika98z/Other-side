@@ -24086,10 +24086,10 @@ MonoBehaviour:
   lightPlayer: {fileID: 1702420491}
   DarkMask:
     serializedVersion: 2
-    m_Bits: 1335
+    m_Bits: 5431
   LightMask:
     serializedVersion: 2
-    m_Bits: 2615
+    m_Bits: 6711
   gameOverPanel: {fileID: 1198996552}
   gameOverText: {fileID: 200816461}
 --- !u!4 &1999501753
