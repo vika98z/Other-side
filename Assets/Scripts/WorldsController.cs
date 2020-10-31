@@ -32,6 +32,10 @@ public class WorldsController : MonoBehaviour
     private Text ScoreText;
     [SerializeField]
     private Image HomeButton;
+    [SerializeField]
+    private Image eImage;
+    [SerializeField]
+    private GameObject Tutorial;
 
     public MusicController MusicController;
 
@@ -46,6 +50,9 @@ public class WorldsController : MonoBehaviour
     private bool canChangeWorld;
     void Awake()
     {
+        var flag = PlayerPrefs.HasKey("BestScore");
+
+        Tutorial.SetActive(false);
         canChangeWorld = false;
         Score = 0;
         startX = (int)lightPlayer.transform.position.x;
@@ -62,14 +69,33 @@ public class WorldsController : MonoBehaviour
         CurrentPlayerType = PlayerType.LightPlayer;
 
         ChangeColorUI();
+        ///
+        ///
+        if (!flag)
+        //if (flag)
+        {
+            Time.timeScale = 0;
+            IsGameOver = true;
+            Tutorial.SetActive(true);
+
+        }
+    }
+
+    public void StartGame()
+    {
+        Time.timeScale = 1f;
+        IsGameOver = false;
+        Tutorial.SetActive(false);
+
     }
 
     void Update()
     {
         time += Time.deltaTime;
-        if (time >= 1)
+        if (time >= 1.5f)
         {
             canChangeWorld = true;
+            SetColorE(true);
             time = 0;
         }
 
@@ -89,6 +115,15 @@ public class WorldsController : MonoBehaviour
             Score = curScore;
 
         ScoreText.text = Score.ToString();
+    }
+
+    private void SetColorE(bool flag)
+    {
+        if (IsGameOver)
+            return;
+        Color tmp = eImage.color;
+        tmp.a = (flag) ? 1f : 0f;
+        eImage.color = tmp;
     }
 
     public void ChangeWorlds()
@@ -115,6 +150,7 @@ public class WorldsController : MonoBehaviour
 
         ChangeColorUI();
         canChangeWorld = false;
+        SetColorE(false);
     }
 
     private void ChangeColorUI()

@@ -10,11 +10,14 @@ public class ButtonsController : MonoBehaviour
     private void Awake()
     {
         Time.timeScale = 1;
-        var score = PlayerPrefs.GetInt("BestScore");
+        var flag = PlayerPrefs.HasKey("BestScore");
         if (bestScoreText)
         {
-            if (score > 0)
+            if (flag)
+            {
+                var score = PlayerPrefs.GetInt("BestScore");
                 bestScoreText.text = "Рекорд: " + score;
+            }
             else
                 bestScoreText.text = "";
         }
